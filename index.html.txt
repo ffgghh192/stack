@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>현서 스택 계산기</title>
+</head>
+<body>
+  <h1>🃏 현서 스택 자동 계산기</h1>
+
+  <h2>1. 카드 → 위치</h2>
+  <label>카드 (예: 6♥): <input type="text" id="cardInput" /></label>
+  <button onclick="cardToIndex()">위치 계산</button>
+  <p id="cardToIndexResult"></p>
+
+  <h2>2. 위치 → 카드</h2>
+  <label>위치 (1~52): <input type="number" id="indexInput" /></label>
+  <button onclick="indexToCard()">카드 계산</button>
+  <p id="indexToCardResult"></p>
+
+  <script>
+    const suits = ['♥', '♠', '♦', '♣'];
+    const base = { '♥': 0, '♠': 13, '♦': 26, '♣': 39 };
+    const valueMap = { 'A': 1, 'J': 11, 'Q': 12, 'K': 13 };
+    const reverseValue = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
+
+    function cardToIndex() {
+      const input = document.getElementById("cardInput").value.trim();
+      const match = input.match(/^([AJQK2-9]|10)([♥♠♦♣])$/);
+      if (!match) {
+        document.getElementById("cardToIndexResult").innerText = "❌ 형식: 숫자+무늬 (예: 7♣)";
+        return;
+      }
+
+      let value = valueMap[match[1]] || parseInt(match[1]);
+      let suit = match[2];
+      let index = base[suit] + (value - 1);
+
+      document.getElementById("cardToIndexResult").innerText = `✅ ${input}는 ${index + 1}번째 카드입니다.`;
+    }
+
+    function indexToCard() {
+      let index = parseInt(document.getElementById("indexInput").value);
+      if (index < 1 || index > 52) {
+        document.getElementById("indexToCardResult").innerText = "❌ 범위: 1~52";
+        return;
+      }
+      index -= 1;
+      let suit = suits[Math.floor(index / 13)];
+      let value = reverseValue[index % 13];
+
+      document.getElementById("indexToCardResult").innerText = `✅ ${index + 1}번째 카드는 ${value}${suit}입니다.`;
+    }
+  </script>
+</body>
+</html>
